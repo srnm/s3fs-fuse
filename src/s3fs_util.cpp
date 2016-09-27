@@ -730,7 +730,8 @@ mode_t get_mode(const char *s)
 }
 
 bool isdir_sghack(headers_t& meta, string contentType) {
-  return contentType == "text/plain" && get_size(meta) == 0;
+  off_t size = get_size(meta);
+  return (size == 0 || size == 1) && contentType == "text/plain";
 }
 
 mode_t get_mode(headers_t& meta, const char* path, bool checkdir, bool forcedir)
