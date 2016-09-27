@@ -729,6 +729,10 @@ mode_t get_mode(const char *s)
   return static_cast<mode_t>(s3fs_strtoofft(s));
 }
 
+bool isdir_sghack(headers_t& meta, string contentType) {
+  return contentType == "text/plain" && get_size(meta) == 0;
+}
+
 mode_t get_mode(headers_t& meta, const char* path, bool checkdir, bool forcedir)
 {
   mode_t mode = 0;
@@ -762,7 +766,7 @@ mode_t get_mode(headers_t& meta, const char* path, bool checkdir, bool forcedir)
             if(strConType == "application/x-directory"){
               mode |= S_IFDIR;
             }else if(path && 0 < strlen(path) && '/' == path[strlen(path) - 1]){
-              if(strConType == "binary/octet-stream" || strConType == "application/octet-stream"){
+              if(strConType == "binary/octet-stream" || strConType == "application/octet-stream" || isdir_sghack(meta,strConType)){
                 mode |= S_IFDIR;
               }else{
                 mode |= S_IFREG;
